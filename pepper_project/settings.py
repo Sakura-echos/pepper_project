@@ -78,15 +78,12 @@ WSGI_APPLICATION = 'pepper_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'pepper',
+        'NAME': 'papper',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306',
-        'OPTION': {
-    'init_command': 'SET sql_model="STRICT_TRANS_TABLES"',
-}
-}
+    }
 }
 
 # Password validation
