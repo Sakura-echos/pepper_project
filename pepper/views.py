@@ -9,7 +9,51 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from uuid import uuid4
 from django.contrib.auth.tokens import default_token_generator
+from .models import Sample
+from .serializers import SampleSerializer
+@api_view(['GET'])
+def get_samples(request):
+    samples = Sample.objects.all()
+    serializer = SampleSerializer(samples, many=True)
+    return Response(serializer.data)
 
+@api_view(['GET'])
+def get_sample(request, sample_id):
+    try:
+        sample = Sample.objects.get(id=sample_id)
+        serializer = SampleSerializer(sample)
+        return Response(serializer.data)
+    except Sample.DoesNotExist:
+        return Response({'error': 'Sample not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def create_sample(request):
+    serializer = SampleSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def update_sample(request, sample_id):
+    try:
+        sample = Sample.objects.get(id=sample_id)
+        serializer = SampleSerializer(sample, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Sample.DoesNotExist:
+        return Response({'error': 'Sample not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+def delete_sample(request, sample_id):
+    try:
+        sample = Sample.objects.get(id=sample_id)
+        sample.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except Sample.DoesNotExist:
+        return Response({'error': 'Sample not found.'}, status=status.HTTP_404_NOT_FOUND)
 @swagger_auto_schema(method='post', request_body=openapi.Schema(
     type=openapi.TYPE_OBJECT,
     properties={
