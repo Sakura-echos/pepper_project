@@ -19,9 +19,14 @@ body {
     align-content: center;
 }
 
+.navbar-link {
+    color: white;
+}
 
-
-
+.container-main {
+    padding: 50px;
+    padding-left: 70px;
+}
 
 .pepper-title {
     font-weight: bold;
@@ -55,3 +60,4 @@ body {
     color: #777;
     font-size: 14px;
 }
+

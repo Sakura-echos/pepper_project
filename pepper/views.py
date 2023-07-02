@@ -166,3 +166,5 @@ def polydispersivity_tool(request):
 def literature_finder(request):
     return render(request, 'pepper/literature_finder.html')
 
+def manage_data(request):
+    return render(request, 'pepper/manage_data.html')
