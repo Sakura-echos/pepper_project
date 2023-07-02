@@ -1,5 +1,26 @@
 {% extends "pepper/base.html" %}
 
 {% block content %}
-<h1>Welcome to the upload_new_data page!</h1>
+    <div>
+        <div class="jumbotron">
+            <h1 class="display-4">Uploading new data to PePPEr</h1>
+            <p class="lead">Have you collected your own data (new or existing) that is not yet within the database?
+                Download the database template and follow the data instructions to have your data included in the
+                database.
+            </p>
+            <hr class="my-4">
+            <p>Note, all data submitted will be reviewed before updating PePPEr to ensure that formatting and units are
+                all consistent with existing data.
+            </p>
+
+            <a class="btn btn-primary" href="#" role="button">Download database template
+            </a>
+            <a class="btn btn-secondary" href="#" role="button">Uploading data instructions
+            </a>
+            <a class="btn btn-info" href="#" role="button">Upload new data
+            </a>
+            <p>Any questions regarding the upload can be directed to sam.mitchell@bristol.ac.uk
+            </p>
+        </div>
+    </div>
 {% endblock %}
