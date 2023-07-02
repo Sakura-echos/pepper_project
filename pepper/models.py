@@ -31,3 +31,16 @@ class Sample(models.Model):
 
     def __str__(self):
         return f"Sample {self.sample_no}"
+
+class User(models.Model):
+    username = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
+    permission = models.IntegerField(default=1)
+    token = models.CharField(max_length=255, null=True)
+
+    def __init__(self, username, password, permission=1, token=None, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        self.username = username
+        self.password = password
+        self.permission = permission
+        self.token = token
