@@ -26,11 +26,26 @@
 
 
         </div>
-        <button type="button" class="btn btn-link navbar-link" data-toggle="modal" data-target="#LoginModal">Login
-        </button>
-        <button type="button" class="btn btn-link navbar-link" data-toggle="modal" data-target="#RegisterModal">
-            Register
-        </button>
+        <div class="dropdown">
+            {% if request.session.username %}
+                <button class="btn btn-link navbar-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ request.session.username }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Profile</a>
+                    <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+            {% else %}
+                <button type="button" class="btn btn-link navbar-link" data-toggle="modal" data-target="#LoginModal">
+                    Login
+                </button>
+                <button type="button" class="btn btn-link navbar-link" data-toggle="modal" data-target="#RegisterModal">
+                    Register
+                </button>
+            {% endif %}
+        </div>
+
     </nav>
 </header>
 
@@ -90,7 +105,7 @@
             </div>
             <div class="modal-body">
                 <form method="post" action="{% url 'login' %}">
-{#                    Django特性，用来防止跨站请求伪造（CSRF）攻击#}
+                    {#                    Django特性，用来防止跨站请求伪造（CSRF）攻击#}
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="usernameInput">Username</label>
@@ -121,27 +136,49 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="registerForm" action="{% url 'register' %}" method="post">
+                    {% csrf_token %}
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Username</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" class="form-control" id="registerUsername" name="username" required>
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="password2" required>
+                    </div>
+                    <div id="passwordError" class="alert alert-danger" style="display: none;">
+                        Passwords do not match.
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Register</button>
+                <button type="button" class="btn btn-primary" id="registerButton">Register</button>
             </div>
         </div>
     </div>
 </div>
 
+
 <!-- Bootstrap JS and jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<script>
+    document.getElementById('registerButton').addEventListener('click', function (event) {
+        var password = document.getElementById('registerPassword').value;
+        var confirmPassword = document.getElementById('confirmPassword').value;
+        if (password !== confirmPassword) {
+            event.preventDefault();
+            document.getElementById('passwordError').style.display = 'block';
+        } else {
+            document.getElementById('registerForm').submit();
+        }
+    });
+</script>
 </body>
 </html>

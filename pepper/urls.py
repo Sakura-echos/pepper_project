@@ -1,11 +1,12 @@
 # urls.py
 from django.urls import path
 from .views import register, login_user, delete_user, change_password, get_samples, create_sample, get_sample, \
-    update_sample, delete_sample
+    update_sample, delete_sample, logout_user
 
 urlpatterns = [
     path('register/', register, name='register'),
     path('login/', login_user, name='login'),
+    path('logout/', logout_user, name='logout'),
     path('delete/', delete_user, name='delete'),
     path('change_password/', change_password, name='change_password'),
     path('samples/', get_samples, name='sample-list'),
