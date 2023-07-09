@@ -1,4 +1,5 @@
 {% extends "pepper/base.html" %}
+{% load static %}
 
 {% block content %}
     <div>
@@ -13,7 +14,7 @@
                 all consistent with existing data.
             </p>
 
-            <a class="btn btn-primary" href="#" role="button">Download database template
+            <a class="btn btn-primary" href="{% static 'pepper/file/calculation.xlsx' %}" role="button">Download database template
             </a>
             <a class="btn btn-secondary" href="#" role="button">Uploading data instructions
             </a>
