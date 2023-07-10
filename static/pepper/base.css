@@ -42,7 +42,7 @@ body {
 }
 
 
-.row {
+.sidebar-row {
     height: calc(100vh - 4rem - 60px);
 }
 
