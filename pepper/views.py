@@ -12,14 +12,34 @@ from uuid import uuid4
 from django.contrib.auth.tokens import default_token_generator
 from .models import Sample
 from .serializers import SampleSerializer
+from django.core.paginator import Paginator
 
+
+from django.db.models import Q
 
 @api_view(['GET'])
 def get_samples(request):
-    samples = Sample.objects.all()
-    serializer = SampleSerializer(samples, many=True)
-    return Response(serializer.data)
+    page_number = request.GET.get('page', 1)
+    limit = request.GET.get('limit', 3)
+    publication_search_keyword = request.GET.get('publication_search', '')
+    volcano_search_keyword = request.GET.get('volcano_search', '')
 
+    samples = Sample.objects.all()
+
+    if publication_search_keyword:
+        samples = samples.filter(publication__icontains=publication_search_keyword)
+
+    if volcano_search_keyword:
+        samples = samples.filter(volcano__icontains=volcano_search_keyword)
+
+    paginator = Paginator(samples, limit)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'pepper/manage_data.html', {
+        'page_obj': page_obj,
+        'publication_search_keyword': publication_search_keyword,
+        'volcano_search_keyword': volcano_search_keyword
+    })
 
 @api_view(['GET'])
 def get_sample(request, sample_id):

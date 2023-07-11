@@ -30,4 +30,5 @@ urlpatterns = [
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('app1/', include('pepper.urls')),
     path('manage_data/', views.manage_data, name='manage_data'),
+    path('samples/', views.get_samples, name='get_samples'),
 ]

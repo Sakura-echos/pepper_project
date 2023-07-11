@@ -1,54 +1,100 @@
 {% extends "pepper/base.html" %}
 
 {% block content %}
-    <div>
+    <form method="GET" action="{% url 'get_samples' %}" class="form-inline">
+        <div class="form-group mr-2">
+            <input type="text" name="publication_search" placeholder="按 Publication 搜索" class="form-control">
+        </div>
+        <div class="form-group mr-2">
+            <input type="text" name="volcano_search" placeholder="按 Volcano 搜索" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">搜索</button>
+    </form>
+    <div style="overflow-x: auto; margin-top: 40px">
         <table class="table">
-            <thead class="thead-light">
+            <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th>Publication</th>
+                <th>Volcano</th>
+                <th>Eruption</th>
+                <th>Data DOI</th>
+                <th>Chemistry</th>
+                <th>Bulk SiO2</th>
+                <th>Bulk Na2O+K2O</th>
+                <th>Glass SiO2</th>
+                <th>Glass Na2O+K2O</th>
+                <th>Chemistry DOI</th>
+                <th>Rock Experiment Type</th>
+                <th>Subaerial/Submarine</th>
+                <th>Effusion/Explosion</th>
+                <th>Sample Number</th>
+                <th>Bulk Porosity</th>
+                <th>Connected Porosity</th>
+                <th>Connectivity</th>
+                <th>Permeability K1</th>
+                <th>Permeability K2</th>
+                <th>Vesicle Number Density</th>
+                <th>S Polydispersivity</th>
+                <th>Total Crystallinity</th>
+                <th>Phenocrystallinity</th>
+                <th>Microcrystallinity</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-            </tr>
+            {% for sample in page_obj %}
+                <tr>
+                    <td>{{ sample.publication }}</td>
+                    <td>{{ sample.volcano }}</td>
+                    <td>{{ sample.eruption }}</td>
+                    <td>{{ sample.data_doi }}</td>
+                    <td>{{ sample.chemistry }}</td>
+                    <td>{{ sample.bulk_sio2 }}</td>
+                    <td>{{ sample.bulk_na2o_k2o }}</td>
+                    <td>{{ sample.glass_sio2 }}</td>
+                    <td>{{ sample.glass_na2o_k2o }}</td>
+                    <td>{{ sample.chemistry_doi }}</td>
+                    <td>{{ sample.rock_experiment_type }}</td>
+                    <td>{{ sample.subaerial_submarine }}</td>
+                    <td>{{ sample.eff_exp }}</td>
+                    <td>{{ sample.sample_no }}</td>
+                    <td>{{ sample.bulk_porosity }}</td>
+                    <td>{{ sample.connected_porosity }}</td>
+                    <td>{{ sample.connectivity }}</td>
+                    <td>{{ sample.permeability_k1 }}</td>
+                    <td>{{ sample.permeability_k2 }}</td>
+                    <td>{{ sample.vesicle_number_density }}</td>
+                    <td>{{ sample.s_polydispersivity }}</td>
+                    <td>{{ sample.total_crystallinity }}</td>
+                    <td>{{ sample.phenocrystallinity }}</td>
+                    <td>{{ sample.microcrystallinity }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-end">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link">&laquo;</a></li>
+                {% endif %}
+
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active"><a class="page-link">{{ i }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link">&raquo;</a></li>
+                {% endif %}
             </ul>
         </nav>
     </div>
-
 {% endblock %}
