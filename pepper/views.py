@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
@@ -56,6 +57,11 @@ def create_sample(request):
     serializer = SampleSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+
+        subject = 'PePPEr信息'
+        message = '用户新增了一个数据'
+        recipient_list = ['1127911471@qq.com']
+        send_mail(subject, message, '1127911471@qq.com', recipient_list)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
