@@ -31,4 +31,8 @@ urlpatterns = [
     path('app1/', include('pepper.urls')),
     path('manage_data/', views.manage_data, name='manage_data'),
     path('samples/', views.get_samples, name='get_samples'),
+    path('samples/<int:sample_id>/', views.get_sample, name='sample-detail'),
+    path('samples/<int:sample_id>/delete/', views.delete_sample, name='sample-delete'),
+    path('samples/<int:sample_id>/update/', views.update_sample, name='sample-update'),
+
 ]
