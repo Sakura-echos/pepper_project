@@ -14,6 +14,7 @@
         <table class="table">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>Publication</th>
                 <th>Volcano</th>
                 <th>Eruption</th>
@@ -38,11 +39,13 @@
                 <th>Total Crystallinity</th>
                 <th>Phenocrystallinity</th>
                 <th>Microcrystallinity</th>
+                <th>Operation</th>
             </tr>
             </thead>
             <tbody>
             {% for sample in page_obj %}
                 <tr>
+                    <td>{{ sample.id }}</td>
                     <td>{{ sample.publication }}</td>
                     <td>{{ sample.volcano }}</td>
                     <td>{{ sample.eruption }}</td>
@@ -67,6 +70,13 @@
                     <td>{{ sample.total_crystallinity }}</td>
                     <td>{{ sample.phenocrystallinity }}</td>
                     <td>{{ sample.microcrystallinity }}</td>
+                    <td style="min-width: 150px;">
+                        <button type="button" class="btn btn-primary btn-sm btn-edit" data-toggle="modal"
+                                data-target="#EditModal" data-sample-id="{{ sample.id }}">Edit
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" data-sample-id="{{ sample.id }}">Delete
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -74,8 +84,10 @@
         <nav>
             <ul class="pagination">
                 {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link"
-                                             href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ page_obj.previous_page_number }}&publication_search={{ publication_search_keyword }}&volcano_search={{ volcano_search_keyword }}">&laquo;</a>
+                    </li>
                 {% else %}
                     <li class="page-item disabled"><a class="page-link">&laquo;</a></li>
                 {% endif %}
@@ -84,17 +96,261 @@
                     {% if page_obj.number == i %}
                         <li class="page-item active"><a class="page-link">{{ i }}</a></li>
                     {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="?page={{ i }}&publication_search={{ publication_search_keyword }}&volcano_search={{ volcano_search_keyword }}">{{ i }}</a>
+                        </li>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ page_obj.next_page_number }}&publication_search={{ publication_search_keyword }}&volcano_search={{ volcano_search_keyword }}">&raquo;</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled"><a class="page-link">&raquo;</a></li>
                 {% endif %}
             </ul>
         </nav>
+
     </div>
+    <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Upload New Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'sample-create' %}">
+                        {% csrf_token %}
+                        <div class="container-fluid">
+                            <div class="row">
+                                <input type="hidden" id="id" name="id" value="">
+                                <div class="col-md-3">
+                                    <label for="publication">Publication</label>
+                                    <input type="text" id="publication" name="publication" class="form-control">
+
+                                    <label for="volcano">Volcano</label>
+                                    <input type="text" id="volcano" name="volcano" class="form-control">
+
+                                    <label for="eruption">Eruption</label>
+                                    <input type="text" id="eruption" name="eruption" class="form-control">
+
+                                    <label for="data_doi">Data DOI</label>
+                                    <input type="text" id="data_doi" name="data_doi" class="form-control">
+
+                                    <label for="chemistry">Chemistry</label>
+                                    <input type="text" id="chemistry" name="chemistry" class="form-control">
+
+                                    <label for="bulk_sio2">Bulk SiO2</label>
+                                    <input type="text" id="bulk_sio2" name="bulk_sio2" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="bulk_na2o_k2o">Bulk Na2O K2O</label>
+                                    <input type="text" id="bulk_na2o_k2o" name="bulk_na2o_k2o" class="form-control">
+
+                                    <label for="glass_sio2">Glass SiO2</label>
+                                    <input type="text" id="glass_sio2" name="glass_sio2" class="form-control">
+
+                                    <label for="glass_na2o_k2o">Glass Na2O K2O</label>
+                                    <input type="text" id="glass_na2o_k2o" name="glass_na2o_k2o" class="form-control">
+
+                                    <label for="chemistry_doi">Chemistry DOI</label>
+                                    <input type="text" id="chemistry_doi" name="chemistry_doi" class="form-control">
+
+                                    <label for="rock_experiment_type">Rock Experiment Type</label>
+                                    <input type="text" id="rock_experiment_type" name="rock_experiment_type"
+                                           class="form-control">
+
+                                    <label for="total_crystallinity">Total Crystallinity</label>
+                                    <input type="text" id="total_crystallinity" name="total_crystallinity"
+                                           class="form-control">
+
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="subaerial_submarine">Subaerial/Submarine</label>
+                                    <input type="text" id="subaerial_submarine" name="subaerial_submarine"
+                                           class="form-control">
+
+                                    <label for="eff_exp">Eff Exp</label>
+                                    <input type="text" id="eff_exp" name="eff_exp" class="form-control">
+
+                                    <label for="sample_no">Sample No</label>
+                                    <input type="text" id="sample_no" name="sample_no" class="form-control">
+
+                                    <label for="bulk_porosity">Bulk Porosity</label>
+                                    <input type="text" id="bulk_porosity" name="bulk_porosity" class="form-control">
+
+                                    <label for="connected_porosity">Connected Porosity</label>
+                                    <input type="text" id="connected_porosity" name="connected_porosity"
+                                           class="form-control">
+
+                                    <label for="phenocrystallinity">Phenocrystallinity</label>
+                                    <input type="text" id="phenocrystallinity" name="phenocrystallinity"
+                                           class="form-control">
+
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="connectivity">Connectivity</label>
+                                    <input type="text" id="connectivity" name="connectivity" class="form-control">
+
+                                    <label for="permeability_k1">Permeability K1</label>
+                                    <input type="text" id="permeability_k1" name="permeability_k1" class="form-control">
+
+                                    <label for="permeability_k2">Permeability K2</label>
+                                    <input type="text" id="permeability_k2" name="permeability_k2" class="form-control">
+
+                                    <label for="vesicle_number_density">Vesicle Number Density</label>
+                                    <input type="text" id="vesicle_number_density" name="vesicle_number_density"
+                                           class="form-control">
+
+                                    <label for="s_polydispersivity">S Polydispersivity</label>
+                                    <input type="text" id="s_polydispersivity" name="s_polydispersivity"
+                                           class="form-control">
+
+                                    <label for="microcrystallinity">Microcrystallinity</label>
+                                    <input type="text" id="microcrystallinity" name="microcrystallinity"
+                                           class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <input type="submit" value="Upload" class="btn btn-primary btn-update">
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.btn-danger').click(function () {
+                let sampleId = $(this).data('sample-id');
+
+                // 显示删除确认提示
+                if (confirm('Are you sure you want to delete this sample?')) {
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        url: '/samples/' + sampleId + '/delete/',
+                        type: 'DELETE',
+                        success: function (result) {
+                            // 删除成功，刷新页面或者移除对应行
+                            location.reload();
+                        },
+                        error: function (result) {
+                            // 错误处理，显示错误信息
+                            alert('Error in deleting the sample.');
+                        }
+                    });
+                }
+            });
+        });
+
+        // 获取数据
+        $(document).ready(function () {
+            $('.btn-edit').click(function () {
+                let sampleId = $(this).data('sample-id');
+
+                $.ajax({
+                    url: '/samples/' + sampleId + '/',
+                    type: 'GET',
+                    success: function (result) {
+                        // 填充模态框的表单字段
+                        $('#id').val(result.id);
+                        $('#publication').val(result.publication);
+                        $('#volcano').val(result.volcano);
+                        $('#eruption').val(result.eruption);
+                        $('#data_doi').val(result.data_doi);
+                        $('#chemistry').val(result.chemistry);
+                        $('#bulk_sio2').val(result.bulk_sio2);
+                        $('#bulk_na2o_k2o').val(result.bulk_na2o_k2o);
+                        $('#glass_sio2').val(result.glass_sio2);
+                        $('#glass_na2o_k2o').val(result.glass_na2o_k2o);
+                        $('#chemistry_doi').val(result.chemistry_doi);
+                        $('#rock_experiment_type').val(result.rock_experiment_type);
+                        $('#subaerial_submarine').val(result.subaerial_submarine);
+                        $('#eff_exp').val(result.eff_exp);
+                        $('#sample_no').val(result.sample_no);
+                        $('#bulk_porosity').val(result.bulk_porosity);
+                        $('#connected_porosity').val(result.connected_porosity);
+                        $('#connectivity').val(result.connectivity);
+                        $('#permeability_k1').val(result.permeability_k1);
+                        $('#permeability_k2').val(result.permeability_k2);
+                        $('#vesicle_number_density').val(result.vesicle_number_density);
+                        $('#s_polydispersivity').val(result.s_polydispersivity);
+                        $('#total_crystallinity').val(result.total_crystallinity);
+                        $('#phenocrystallinity').val(result.phenocrystallinity);
+                        $('#microcrystallinity').val(result.microcrystallinity);
+
+                        // 以此类推，为所有的表单字段赋值
+                    },
+                    error: function (result) {
+                        // 错误处理，显示错误信息
+                        alert('Error in retrieving the sample data.');
+                    }
+                });
+            });
+            // ...
+        });
+
+        // 更新数据
+        $(document).ready(function () {
+            $(".btn-update").click(function (event) {
+                event.preventDefault();
+
+                var id = $('#id').val();  // 用你的id字段获取id
+
+                $.ajax({
+                    url: '/samples/' + id + '/update/', // 需要根据你的路由进行修改
+                    type: 'PUT',
+                    data: {
+                        'publication': $('#publication').val(),
+                        'volcano': $('#volcano').val(),
+                        'eruption': $('#eruption').val(),
+                        'data_doi': $('#data_doi').val(),
+                        'chemistry': $('#chemistry').val(),
+                        'bulk_sio2': $('#bulk_sio2').val(),
+                        'bulk_na2o_k2o': $('#bulk_na2o_k2o').val(),
+                        'glass_sio2': $('#glass_sio2').val(),
+                        'glass_na2o_k2o': $('#glass_na2o_k2o').val(),
+                        'chemistry_doi': $('#chemistry_doi').val(),
+                        'rock_experiment_type': $('#rock_experiment_type').val(),
+                        'subaerial_submarine': $('#subaerial_submarine').val(),
+                        'eff_exp': $('#eff_exp').val(),
+                        'sample_no': $('#sample_no').val(),
+                        'bulk_porosity': $('#bulk_porosity').val(),
+                        'connected_porosity': $('#connected_porosity').val(),
+                        'connectivity': $('#connectivity').val(),
+                        'permeability_k1': $('#permeability_k1').val(),
+                        'permeability_k2': $('#permeability_k2').val(),
+                        'vesicle_number_density': $('#vesicle_number_density').val(),
+                        's_polydispersivity': $('#s_polydispersivity').val(),
+                        'total_crystallinity': $('#total_crystallinity').val(),
+                        'phenocrystallinity': $('#phenocrystallinity').val(),
+                        'microcrystallinity': $('#microcrystallinity').val()
+                    },
+                    success: function (response) {
+                        $('#EditModal').modal('hide');
+                        alert('Sample updated successfully!');
+                        location.reload();
+                    },
+                    error: function (error) {
+                        alert('An error occurred.');
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
