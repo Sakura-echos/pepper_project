@@ -7,6 +7,8 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
+from pepper.views import upload_file
+
 schema_view = get_schema_view(
     openapi.Info(
         title="Your API",
@@ -31,4 +33,5 @@ urlpatterns = [
     path('app1/', include('pepper.urls')),
     path('manage_data/', views.manage_data, name='manage_data'),
     path('samples/', views.get_samples, name='get_samples'),
+    path('upload-file', upload_file, name='upload_file'),
 ]

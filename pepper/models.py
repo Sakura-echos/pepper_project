@@ -32,6 +32,15 @@ class Sample(models.Model):
     def __str__(self):
         return f"Sample {self.sample_no}"
 
+class literature(models.Model):
+    publication = models.CharField(max_length=255, blank=True)
+    pub_year = models.CharField(max_length=255, blank=True)
+    doi = models.CharField(max_length=255, blank=True)
+    class Meta():
+        db_table="literature"
+    def __str__(self):
+        return f"publication {self.publication}"
+
 class User(models.Model):
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=255)

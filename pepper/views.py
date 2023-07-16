@@ -1,8 +1,12 @@
+from io import TextIOWrapper
+
 from django.core.mail import send_mail
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,10 +15,13 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from uuid import uuid4
 from django.contrib.auth.tokens import default_token_generator
-from .models import Sample
+
+from .forms import LiteratureForm
+from .models import Sample, literature
 from .serializers import SampleSerializer
 from django.core.paginator import Paginator
-
+import csv
+from django.core.exceptions import ValidationError
 
 from django.db.models import Q
 
@@ -57,7 +64,6 @@ def create_sample(request):
     serializer = SampleSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-
         subject = 'PePPEr信息'
         message = '用户新增了一个数据'
         recipient_list = ['1127911471@qq.com']
@@ -225,4 +231,101 @@ def literature_finder(request):
 
 def manage_data(request):
     return render(request, 'pepper/manage_data.html')
+def scientific_to_decimal(value):
+    if 'E-' in value:
+        float_value = float(value)
+        decimal_value = format(float_value, '.{}f'.format(abs(int(value.split('E-')[1]))))
+        return decimal_value
+    else:
+        return value
+def import_samples_from_csv(file):
+    # Open the CSV file
+    csv_file = TextIOWrapper(file, encoding='utf-8')
+    reader = csv.DictReader(csv_file)
+    for row in reader:
+            # Create a new Sample object
+            sample = Sample()
 
+            # Set the field values from the CSV row
+            sample.publication = row['publication']
+            sample.volcano = row['volcano']
+            sample.eruption = row['eruption']
+            sample.data_doi = row['data_doi']
+            sample.chemistry = row['chemistry']
+            sample.bulk_sio2 = row['bulk_sio2']
+            sample.bulk_na2o_k2o = row['bulk_na2o_k2o']
+            sample.glass_sio2 = row['glass_sio2']
+            sample.glass_na2o_k2o = row['glass_na2o_k2o']
+            sample.chemistry_doi = row['chemistry_doi']
+            sample.rock_experiment_type = row['rock_experiment_type']
+            sample.subaerial_submarine = row['subaerial_submarine']
+            sample.eff_exp = row['eff_exp']
+            sample.sample_no = row['sample_no']
+            sample.bulk_porosity = row['bulk_porosity']
+            sample.connected_porosity = row['connected_porosity']
+            sample.connectivity = row['connectivity']
+            sample.permeability_k1 = scientific_to_decimal(row['permeability_k1'])
+            sample.permeability_k2 = scientific_to_decimal(row['permeability_k2'])
+            sample.vesicle_number_density = scientific_to_decimal(row['vesicle_number_density'])
+            sample.s_polydispersivity = scientific_to_decimal(row['s_polydispersivity'])
+            sample.total_crystallinity = scientific_to_decimal(row['total_crystallinity'])
+            sample.phenocrystallinity = scientific_to_decimal(row['phenocrystallinity'])
+            sample.microcrystallinity = scientific_to_decimal(row['microcrystallinity'])
+
+
+            try:
+                # Validate and save the Sample object
+                sample.full_clean()
+                sample.save()
+            except ValidationError as e:
+                # Handle validation errors
+                print(f"Validation Error for row: {row}\n{e}")
+
+@csrf_exempt
+def upload_file(request):
+    if request.method == 'POST':
+        file = request.FILES.get('file')
+
+        if file:
+            # 调用你之前编写的导入函数
+            import_samples_from_csv(file)
+
+            return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error'})
+
+
+
+# 列出所有 literature 对象
+def literature_list(request):
+    literature_objects = literature.objects.all()
+    return render(request, 'literature/list.html', {'literature_objects': literature_objects})
+
+# 创建 literature 对象
+def literature_create(request):
+    if request.method == 'POST':
+        form = LiteratureForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('literature_list')
+    else:
+        form = LiteratureForm()
+    return render(request, 'literature/create.html', {'form': form})
+
+# 更新 literature 对象
+def literature_update(request, pk):
+    literature_object = literature.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = LiteratureForm(request.POST, instance=literature_object)
+        if form.is_valid():
+            form.save()
+            return redirect('literature_list')
+    else:
+        form = LiteratureForm(instance=literature_object)
+    return render(request, 'literature/update.html', {'form': form})
+
+# 删除 literature 对象
+def literature_delete(request, pk):
+    literature_object = literature.objects.get(pk=pk)
+    literature_object.delete()
+    return redirect('literature_list')

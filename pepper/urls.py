@@ -1,7 +1,7 @@
 # urls.py
 from django.urls import path
 from .views import register, login_user, delete_user, change_password, get_samples, create_sample, get_sample, \
-    update_sample, delete_sample, logout_user
+    update_sample, delete_sample, logout_user, literature_delete, literature_create, literature_update, literature_list
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -14,4 +14,8 @@ urlpatterns = [
     path('samples/create/', create_sample, name='sample-create'),
     path('samples/<int:sample_id>/update/', update_sample, name='sample-update'),
     path('samples/<int:sample_id>/delete/', delete_sample, name='sample-delete'),
+    path('literature_create/', literature_create, name='literature_create'),
+    path('literature_update/<int:pk>/', literature_update, name='literature_update'),
+    path('literature_delete/<int:pk>/', literature_delete, name='literature_delete'),
+    path('literature', literature_list, name='literature_list'),
 ]
