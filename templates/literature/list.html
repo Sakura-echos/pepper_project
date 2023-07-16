@@ -1,0 +1,15 @@
+{% extends "pepper/base.html" %}
+
+{% block content %}
+    <h1>Literature List</h1>
+    <a style="color: red" href="{% url 'literature_create' %}">Create New</a>
+    <ul>
+        {% for literature_object in literature_objects %}
+            <li>
+                <a href="{{ literature_object.doi }}">{{ literature_object.publication }} ({{ literature_object.pub_year }})</a>
+                <a style="color: red" href="{% url 'literature_update' literature_object.id %}">Update</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

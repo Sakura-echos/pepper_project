@@ -1,0 +1,185 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+    <link href="{% static 'pepper/base.css' %}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <div class="navbar-logo">
+                <img src="{% static 'pepper/img/pepper_logo.svg' %}" alt="PePPEr" class="pepper-icon">
+                <!-- 添加的图标，你需要替换为实际的图片路径 -->
+                <span class="pepper-title">PePPEr</span> <!-- 独立的 "PePPEr" -->
+
+            </div>
+
+            <a class="navbar-brand" href="#">
+                A Permeability Porosity and Pycnometry volcanic Eruption sample database
+            </a>
+
+
+        </div>
+        <div class="dropdown">
+            {% if request.session.username %}
+                <button class="btn btn-link navbar-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ request.session.username }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Profile</a>
+                    <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+            {% else %}
+                <button type="button" class="btn btn-link navbar-link" data-toggle="modal" data-target="#LoginModal">
+                    Login
+                </button>
+                <button type="button" class="btn btn-link navbar-link" data-toggle="modal" data-target="#RegisterModal">
+                    Register
+                </button>
+            {% endif %}
+        </div>
+
+    </nav>
+</header>
+
+<div class="container-fluid">
+    <div class="row sidebar-row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'data_plotter' %}">Data plotter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'download_data' %}">Download data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'upload_new_data' %}">Upload new data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'polydispersivity_tool' %}">Polydispersivity tool</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'literature_list' %}">Literature finder</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'sample-list' %}">Manage Data</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 container-main">
+            {% block content %}
+                <!-- 这里将插入页面特有的内容 -->
+            {% endblock %}
+        </main>
+    </div>
+</div>
+
+{#<footer class="footer">#}
+{#    <div class="container">#}
+{#        <span class="text-muted">Powered by Django | © Henry, Geeki et al. 2023</span>#}
+{#    </div>#}
+{#</footer>#}
+
+{#登录模态框#}
+<div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'login' %}">
+                    {#                    Django特性，用来防止跨站请求伪造（CSRF）攻击#}
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="usernameInput">Username</label>
+                        <input type="text" class="form-control" id="usernameInput" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordInput">Password</label>
+                        <input type="password" class="form-control" id="passwordInput" name="password" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{#注册模态框#}
+<div class="modal fade" id="RegisterModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Register</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm" action="{% url 'register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" class="form-control" id="registerUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" name="password1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="password2" required>
+                    </div>
+                    <div id="passwordError" class="alert alert-danger" style="display: none;">
+                        Passwords do not match.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="registerButton">Register</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('registerButton').addEventListener('click', function (event) {
+        var password = document.getElementById('registerPassword').value;
+        var confirmPassword = document.getElementById('confirmPassword').value;
+        if (password !== confirmPassword) {
+            event.preventDefault();
+            document.getElementById('passwordError').style.display = 'block';
+        } else {
+            document.getElementById('registerForm').submit();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+{% extends "pepper/base.html" %}
+{% load static %}
+
+{% block content %}
+    <script>
+        $(document).ready(function() {
+            $('#btn-upload').click(function() {
+                $('#fileInput').click();
+                console.log("halo");
+            });
+
+            $('#fileInput').change(function() {
+                var file = this.files[0];
+                var formData = new FormData();
+                formData.append('file', file);
+
+                fetch('{% url "upload_file" %}', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch((error) => console.log(error));
+            });
+        });
+    </script>
+    <div>
+        <div class="jumbotron">
+            <h1 class="display-4">Uploading new data to PePPEr</h1>
+            <p class="lead">Have you collected your own data (new or existing) that is not yet within the database?
+                Download the database template and follow the data instructions to have your data included in the
+                database.
+            </p>
+            <hr class="my-4">
+            <p>Note, all data submitted will be reviewed before updating PePPEr to ensure that formatting and units are
+                all consistent with existing data.
+            </p>
+
+            <a class="btn btn-primary" href="{% static 'pepper/file/upload_template.csv' %}" role="button">Download
+                database template
+            </a>
+            <a class="btn btn-warning" href="#" role="button" data-toggle="modal" data-target="#uploadFileInstru">Uploading data instructions
+            </a>
+            <a class="btn btn-secondary" id="btn-upload" href="#" role="button">Upload data from template
+            </a>
+            <input id="fileInput" type="file" style="display: none;" accept=".csv">
+            <a class="btn btn-info" href="#" role="button" data-toggle="modal" data-target="#uploadModal">Upload new
+                data
+            </a>
+            <p>Any questions regarding the upload can be directed to sam.mitchell@bristol.ac.uk
+            </p>
+        </div>
+    </div>
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Upload New Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'sample-create' %}">
+                        {% csrf_token %}
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="publication">Publication</label>
+                                    <input type="text" id="publication" name="publication" class="form-control">
+
+                                    <label for="volcano">Volcano</label>
+                                    <input type="text" id="volcano" name="volcano" class="form-control">
+
+                                    <label for="eruption">Eruption</label>
+                                    <input type="text" id="eruption" name="eruption" class="form-control">
+
+                                    <label for="data_doi">Data DOI</label>
+                                    <input type="text" id="data_doi" name="data_doi" class="form-control">
+
+                                    <label for="chemistry">Chemistry</label>
+                                    <input type="text" id="chemistry" name="chemistry" class="form-control">
+
+                                    <label for="bulk_sio2">Bulk SiO2</label>
+                                    <input type="text" id="bulk_sio2" name="bulk_sio2" class="form-control">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="bulk_na2o_k2o">Bulk Na2O K2O</label>
+                                    <input type="text" id="bulk_na2o_k2o" name="bulk_na2o_k2o" class="form-control">
+
+                                    <label for="glass_sio2">Glass SiO2</label>
+                                    <input type="text" id="glass_sio2" name="glass_sio2" class="form-control">
+
+                                    <label for="glass_na2o_k2o">Glass Na2O K2O</label>
+                                    <input type="text" id="glass_na2o_k2o" name="glass_na2o_k2o" class="form-control">
+
+                                    <label for="chemistry_doi">Chemistry DOI</label>
+                                    <input type="text" id="chemistry_doi" name="chemistry_doi" class="form-control">
+
+                                    <label for="rock_experiment_type">Rock Experiment Type</label>
+                                    <input type="text" id="rock_experiment_type" name="rock_experiment_type"
+                                           class="form-control">
+
+                                    <label for="total_crystallinity">Total Crystallinity</label>
+                                    <input type="text" id="total_crystallinity" name="total_crystallinity"
+                                           class="form-control">
+
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="subaerial_submarine">Subaerial/Submarine</label>
+                                    <input type="text" id="subaerial_submarine" name="subaerial_submarine"
+                                           class="form-control">
+
+                                    <label for="eff_exp">Eff Exp</label>
+                                    <input type="text" id="eff_exp" name="eff_exp" class="form-control">
+
+                                    <label for="sample_no">Sample No</label>
+                                    <input type="text" id="sample_no" name="sample_no" class="form-control">
+
+                                    <label for="bulk_porosity">Bulk Porosity</label>
+                                    <input type="text" id="bulk_porosity" name="bulk_porosity" class="form-control">
+
+                                    <label for="connected_porosity">Connected Porosity</label>
+                                    <input type="text" id="connected_porosity" name="connected_porosity"
+                                           class="form-control">
+
+                                    <label for="phenocrystallinity">Phenocrystallinity</label>
+                                    <input type="text" id="phenocrystallinity" name="phenocrystallinity"
+                                           class="form-control">
+
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="connectivity">Connectivity</label>
+                                    <input type="text" id="connectivity" name="connectivity" class="form-control">
+
+                                    <label for="permeability_k1">Permeability K1</label>
+                                    <input type="text" id="permeability_k1" name="permeability_k1" class="form-control">
+
+                                    <label for="permeability_k2">Permeability K2</label>
+                                    <input type="text" id="permeability_k2" name="permeability_k2" class="form-control">
+
+                                    <label for="vesicle_number_density">Vesicle Number Density</label>
+                                    <input type="text" id="vesicle_number_density" name="vesicle_number_density"
+                                           class="form-control">
+
+                                    <label for="s_polydispersivity">S Polydispersivity</label>
+                                    <input type="text" id="s_polydispersivity" name="s_polydispersivity"
+                                           class="form-control">
+
+                                    <label for="microcrystallinity">Microcrystallinity</label>
+                                    <input type="text" id="microcrystallinity" name="microcrystallinity"
+                                           class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <input type="submit" value="Upload" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Upload File</h5>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'sample-create' %}">
+                        {% csrf_token %}
+                        <div class="container-fluid">
+                          <div class="form-group">
+                            <label for="exampleFormControlFile1">Excel data file input</label>
+                            <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                          </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <input type="submit" value="UploadFile" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="uploadFileInstru" tabindex="-1" role="dialog" aria-labelledby="uploadFileInstruLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Here is the explanation of the column names:</h5>
+                </div>
+                <div class="modal-body">
+                    A: Publication – the scientific publication from which the data is found</br>
+                B: Volcano – name of the volcano the sample was collected from</br>
+            C: Eruption – the year, age, unit/phase of the eruption sample comes from</br>
+        D: Data DOI – Full DOI of the publication</br>
+                    E: Chemistry – Broad classification of the whole rock chemistry (TAS classification)</br>
+                    F: Bulk SiO2 (wt %) – the mass weight % of rock that is silica (SiO2)</br>
+                    G: Bulk Na2O+K2O (wt%) – the mass weight % of rock that is alkali (Na2O+K2O)</br>
+                    H: Glass SiO2 (wt %) – the mass weight % of glass that is silica (SiO2)</br>
+                    I: Glass Na2O+K2O (wt%) – the mass weight % of glass that is alkali (Na2O+K2O)</br>
+                    J: Chemistry DOI – Full DOI of the publication with chemistry</br>
+                    K: Rock/experiment type – Brief one/two word description of the rock texture or style of experiment</br>
+                    L: Subaerial/submarine – was the sample from an eruption on land or in the water</br>
+                    M: Eff/exp – was the eruption the sample was from explosive or “effusive”  just lava flows</br>
+                    N: Sample no. – the name of the number as quoted directly from the paper</br>
+                    O: Bulk porosity (%) – The % of the whole sample that is void space/bubbles</br>
+                    P: Connected porosity (%) – the proportion of bulk porosity that is connected. Measured by pycnometry.</br>
+                    Q: Connectivity – =P/O (value between 0 and 1) – already calculated.</br>
+                    R: Permeability k1 – the Darcian permeability of the rock samples, measured by a permeameter</br>
+                    S: Permeability k2 – the inertial permeability of the rock samples, measured by a permeameter</br>
+                    T: Vesicle number density – how many volcanic gas bubbles are trapped in a given rock volume</br>
+                    U: S (polydispersivity) – a measure of the breadth/skewness of the bubble size distribution (value of 0 to 1)</br>
+                    V: Total crystallinity (%) – total volume % of rock that is crystals (all sizes)</br>
+                    W: Phenocrystallinity (%) – total volume % of rock that is larger crystals (phenocrysts)</br>
+                    X: Microcrystallinity (%) – total volume % of rock that is smaller crystals (microlites)</br>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
