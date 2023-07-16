@@ -1,5 +1,30 @@
 {% extends "pepper/base.html" %}
 
 {% block content %}
-<h1>Welcome to the download_data page!</h1>
+<div style="text-align: center">
+    <h1>Downloading the PePPEr database</h1>
+    <h2>Last updated: 12/07/2023</h2>
+    <h2>From here you can download either the entire PePPEr database, or choose from a selection of</h2>
+    <h2>popular data choices. Use the data plotter tool to download specific data you have plotted.</h2>
+<div style="display: flex;flex-direction: row;justify-content: center">
+<div>
+    <div style="display: flex;flex-direction: row;justify-content: space-around;width: 60vw;margin-top: 10px;">
+        <button><a href="{% url 'download_all' %}">Download whole database</a></button>
+    </div>
+    <div style="display: flex;flex-direction: row;justify-content: space-around;width: 60vw;margin-top: 10px;">
+        <button><a href="{% url 'download_explosive_only' %}">Download explosive only</a></button>
+        <button><a href="{% url 'download_effusive_only' %}">Download effusive only</a></button>
+    </div>
+    <div style="display: flex;flex-direction: row;justify-content: space-around;width: 60vw;margin-top: 10px;">
+        <button><a href="{% url 'download_experimental_only' %}">Download experimental only</a></button>
+        <button><a href="{% url 'download_natural_rocks_only' %}">Download natural rocks only</a></button>
+    </div>
+    <div style="display: flex;flex-direction: row;justify-content: space-around;width: 60vw;margin-top: 10px;">
+        <button><a href="{% url 'download_subaerial_only' %}">Download subaerial only</a></button>
+        <button><a href="{% url 'download_submarine_only' %}">Download submarine only</a></button>
+    </div>
+
+</div>
+</div>
+</div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from io import TextIOWrapper
 
 from django.core.mail import send_mail
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
@@ -329,3 +329,190 @@ def literature_delete(request, pk):
     literature_object = literature.objects.get(pk=pk)
     literature_object.delete()
     return redirect('literature_list')
+def download_all(request):
+    samples = Sample.objects.all()
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="whole_database.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Publication', 'Volcano', 'Eruption', 'Data DOI', 'Chemistry', 'Bulk SiO2', 'Bulk Na2O+K2O',
+                     'Glass SiO2', 'Glass Na2O+K2O', 'Chemistry DOI', 'Rock Experiment Type',
+                     'Subaerial/Submarine', 'Effusive/Explosive', 'Sample No', 'Bulk Porosity',
+                     'Connected Porosity', 'Connectivity', 'Permeability K1', 'Permeability K2',
+                     'Vesicle Number Density', 'S Polydispersivity', 'Total Crystallinity',
+                     'Phenocrystallinity', 'Microcrystallinity'])
+
+    for sample in samples:
+        writer.writerow([
+            sample.publication, sample.volcano, sample.eruption, sample.data_doi, sample.chemistry,
+            sample.bulk_sio2, sample.bulk_na2o_k2o, sample.glass_sio2, sample.glass_na2o_k2o,
+            sample.chemistry_doi, sample.rock_experiment_type, sample.subaerial_submarine,
+            sample.eff_exp, sample.sample_no, sample.bulk_porosity, sample.connected_porosity,
+            sample.connectivity, sample.permeability_k1, sample.permeability_k2,
+            sample.vesicle_number_density, sample.s_polydispersivity, sample.total_crystallinity,
+            sample.phenocrystallinity, sample.microcrystallinity
+        ])
+
+    return response
+def download_explosive_only(request):
+    samples = Sample.objects.filter(eff_exp='Explosive')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="whole_database.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Publication', 'Volcano', 'Eruption', 'Data DOI', 'Chemistry', 'Bulk SiO2', 'Bulk Na2O+K2O',
+                     'Glass SiO2', 'Glass Na2O+K2O', 'Chemistry DOI', 'Rock Experiment Type',
+                     'Subaerial/Submarine', 'Effusive/Explosive', 'Sample No', 'Bulk Porosity',
+                     'Connected Porosity', 'Connectivity', 'Permeability K1', 'Permeability K2',
+                     'Vesicle Number Density', 'S Polydispersivity', 'Total Crystallinity',
+                     'Phenocrystallinity', 'Microcrystallinity'])
+
+    for sample in samples:
+        writer.writerow([
+            sample.publication, sample.volcano, sample.eruption, sample.data_doi, sample.chemistry,
+            sample.bulk_sio2, sample.bulk_na2o_k2o, sample.glass_sio2, sample.glass_na2o_k2o,
+            sample.chemistry_doi, sample.rock_experiment_type, sample.subaerial_submarine,
+            sample.eff_exp, sample.sample_no, sample.bulk_porosity, sample.connected_porosity,
+            sample.connectivity, sample.permeability_k1, sample.permeability_k2,
+            sample.vesicle_number_density, sample.s_polydispersivity, sample.total_crystallinity,
+            sample.phenocrystallinity, sample.microcrystallinity
+        ])
+
+    return response
+
+def download_effusive_only(request):
+    samples = Sample.objects.filter(eff_exp='Effusive')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="whole_database.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Publication', 'Volcano', 'Eruption', 'Data DOI', 'Chemistry', 'Bulk SiO2', 'Bulk Na2O+K2O',
+                     'Glass SiO2', 'Glass Na2O+K2O', 'Chemistry DOI', 'Rock Experiment Type',
+                     'Subaerial/Submarine', 'Effusive/Explosive', 'Sample No', 'Bulk Porosity',
+                     'Connected Porosity', 'Connectivity', 'Permeability K1', 'Permeability K2',
+                     'Vesicle Number Density', 'S Polydispersivity', 'Total Crystallinity',
+                     'Phenocrystallinity', 'Microcrystallinity'])
+
+    for sample in samples:
+        writer.writerow([
+            sample.publication, sample.volcano, sample.eruption, sample.data_doi, sample.chemistry,
+            sample.bulk_sio2, sample.bulk_na2o_k2o, sample.glass_sio2, sample.glass_na2o_k2o,
+            sample.chemistry_doi, sample.rock_experiment_type, sample.subaerial_submarine,
+            sample.eff_exp, sample.sample_no, sample.bulk_porosity, sample.connected_porosity,
+            sample.connectivity, sample.permeability_k1, sample.permeability_k2,
+            sample.vesicle_number_density, sample.s_polydispersivity, sample.total_crystallinity,
+            sample.phenocrystallinity, sample.microcrystallinity
+        ])
+
+    return response
+
+def download_experimental_only(request):
+    samples = Sample.objects.filter(rock_experiment_type='Experimental')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="whole_database.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Publication', 'Volcano', 'Eruption', 'Data DOI', 'Chemistry', 'Bulk SiO2', 'Bulk Na2O+K2O',
+                     'Glass SiO2', 'Glass Na2O+K2O', 'Chemistry DOI', 'Rock Experiment Type',
+                     'Subaerial/Submarine', 'Effusive/Explosive', 'Sample No', 'Bulk Porosity',
+                     'Connected Porosity', 'Connectivity', 'Permeability K1', 'Permeability K2',
+                     'Vesicle Number Density', 'S Polydispersivity', 'Total Crystallinity',
+                     'Phenocrystallinity', 'Microcrystallinity'])
+
+    for sample in samples:
+        writer.writerow([
+            sample.publication, sample.volcano, sample.eruption, sample.data_doi, sample.chemistry,
+            sample.bulk_sio2, sample.bulk_na2o_k2o, sample.glass_sio2, sample.glass_na2o_k2o,
+            sample.chemistry_doi, sample.rock_experiment_type, sample.subaerial_submarine,
+            sample.eff_exp, sample.sample_no, sample.bulk_porosity, sample.connected_porosity,
+            sample.connectivity, sample.permeability_k1, sample.permeability_k2,
+            sample.vesicle_number_density, sample.s_polydispersivity, sample.total_crystallinity,
+            sample.phenocrystallinity, sample.microcrystallinity
+        ])
+
+    return response
+
+def download_natural_rocks_only(request):
+    samples = Sample.objects.filter(rock_experiment_type='Natural')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="whole_database.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Publication', 'Volcano', 'Eruption', 'Data DOI', 'Chemistry', 'Bulk SiO2', 'Bulk Na2O+K2O',
+                     'Glass SiO2', 'Glass Na2O+K2O', 'Chemistry DOI', 'Rock Experiment Type',
+                     'Subaerial/Submarine', 'Effusive/Explosive', 'Sample No', 'Bulk Porosity',
+                     'Connected Porosity', 'Connectivity', 'Permeability K1', 'Permeability K2',
+                     'Vesicle Number Density', 'S Polydispersivity', 'Total Crystallinity',
+                     'Phenocrystallinity', 'Microcrystallinity'])
+
+    for sample in samples:
+        writer.writerow([
+            sample.publication, sample.volcano, sample.eruption, sample.data_doi, sample.chemistry,
+            sample.bulk_sio2, sample.bulk_na2o_k2o, sample.glass_sio2, sample.glass_na2o_k2o,
+            sample.chemistry_doi, sample.rock_experiment_type, sample.subaerial_submarine,
+            sample.eff_exp, sample.sample_no, sample.bulk_porosity, sample.connected_porosity,
+            sample.connectivity, sample.permeability_k1, sample.permeability_k2,
+            sample.vesicle_number_density, sample.s_polydispersivity, sample.total_crystallinity,
+            sample.phenocrystallinity, sample.microcrystallinity
+        ])
+
+    return response
+
+def download_subaerial_only(request):
+    samples = Sample.objects.filter(subaerial_submarine='Subaerial')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="whole_database.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Publication', 'Volcano', 'Eruption', 'Data DOI', 'Chemistry', 'Bulk SiO2', 'Bulk Na2O+K2O',
+                     'Glass SiO2', 'Glass Na2O+K2O', 'Chemistry DOI', 'Rock Experiment Type',
+                     'Subaerial/Submarine', 'Effusive/Explosive', 'Sample No', 'Bulk Porosity',
+                     'Connected Porosity', 'Connectivity', 'Permeability K1', 'Permeability K2',
+                     'Vesicle Number Density', 'S Polydispersivity', 'Total Crystallinity',
+                     'Phenocrystallinity', 'Microcrystallinity'])
+
+    for sample in samples:
+        writer.writerow([
+            sample.publication, sample.volcano, sample.eruption, sample.data_doi, sample.chemistry,
+            sample.bulk_sio2, sample.bulk_na2o_k2o, sample.glass_sio2, sample.glass_na2o_k2o,
+            sample.chemistry_doi, sample.rock_experiment_type, sample.subaerial_submarine,
+            sample.eff_exp, sample.sample_no, sample.bulk_porosity, sample.connected_porosity,
+            sample.connectivity, sample.permeability_k1, sample.permeability_k2,
+            sample.vesicle_number_density, sample.s_polydispersivity, sample.total_crystallinity,
+            sample.phenocrystallinity, sample.microcrystallinity
+        ])
+
+    return response
+
+def download_submarine_only(request):
+    samples = Sample.objects.filter(subaerial_submarine='Submarine')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="whole_database.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Publication', 'Volcano', 'Eruption', 'Data DOI', 'Chemistry', 'Bulk SiO2', 'Bulk Na2O+K2O',
+                     'Glass SiO2', 'Glass Na2O+K2O', 'Chemistry DOI', 'Rock Experiment Type',
+                     'Subaerial/Submarine', 'Effusive/Explosive', 'Sample No', 'Bulk Porosity',
+                     'Connected Porosity', 'Connectivity', 'Permeability K1', 'Permeability K2',
+                     'Vesicle Number Density', 'S Polydispersivity', 'Total Crystallinity',
+                     'Phenocrystallinity', 'Microcrystallinity'])
+
+    for sample in samples:
+        writer.writerow([
+            sample.publication, sample.volcano, sample.eruption, sample.data_doi, sample.chemistry,
+            sample.bulk_sio2, sample.bulk_na2o_k2o, sample.glass_sio2, sample.glass_na2o_k2o,
+            sample.chemistry_doi, sample.rock_experiment_type, sample.subaerial_submarine,
+            sample.eff_exp, sample.sample_no, sample.bulk_porosity, sample.connected_porosity,
+            sample.connectivity, sample.permeability_k1, sample.permeability_k2,
+            sample.vesicle_number_density, sample.s_polydispersivity, sample.total_crystallinity,
+            sample.phenocrystallinity, sample.microcrystallinity
+        ])
+
+    return response
