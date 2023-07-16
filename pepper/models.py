@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Permission, User
 from django.db import models
 
 # Create your models here.
@@ -31,7 +32,13 @@ class Sample(models.Model):
 
     def __str__(self):
         return f"Sample {self.sample_no}"
+class Role(models.Model):
+    name = models.CharField(max_length=255)
+    permissions = models.ManyToManyField(Permission)
+    users = models.ManyToManyField(User)
 
+    def __str__(self):
+        return self.name
 class literature(models.Model):
     publication = models.CharField(max_length=255, blank=True)
     pub_year = models.CharField(max_length=255, blank=True)
